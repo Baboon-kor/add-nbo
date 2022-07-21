@@ -2,40 +2,40 @@
 #include <stdint.h>
 #include <netinet/in.h>
 
+uint32_t read_file(char *argv)
+{
+	uint32_t buf, result;
 
+	FILE* fp = fopen(argv, "rb");
 
-int file_read(char argv[]){
-	uint32_t buffer, result;
-	
-	FILE* f = fopen(argv, "rb");
-	
-	result = fread(&buffer, 1, sizeof(uint32_t), f);
-	if(result == 0){
-		perror("fread error");
+	result = fread(&buf, 1, sizeof(uint32_t), fp);
+	if(result == 0)
+	{
+		printf("fread error\n");
 		return 1;
 	}
-	else
-		return buffer;
+	else 
+		return buf;
 }
 
 
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-   uint32_t n1,n2,n_result;
+	uint32_t ret1, ret2;
+	uint32_t sum;
 
+	if(argc!=3)
+	{
+		printf("arg error\n");
+		return 1;
+	}
 
-   int result1, result2;
+	ret1 = ntohl(read_file(argv[1]));
+	ret2 = ntohl(read_file(argv[2]));
 
-   if(argc!=3){
-       perror("argument error");
-       return 1;
-   }
-   
-   n1 = ntohl(file_read(argv[1]));
-   n2 = ntohl(file_read(argv[2]));
+	sum = ret1 + ret2;
 
-   n_result = n1+n2;
-
-   printf("%d(0x%x) + %d(0x%x) = %d(0x%x)",n1,n1,n2,n2,n_result,n_result);
+	printf("%d(0x%x) + %d(0x%x) = %d(0x%x)",ret1, ret1, ret2, ret2, sum, sum);
+	return 0;
 }
